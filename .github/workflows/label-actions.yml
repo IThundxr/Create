@@ -6,6 +6,12 @@ on:
     pull_request_target:
         types: [labeled, unlabeled]
 
+permissions:
+    contents: read
+    issues: write
+    pull-requests: write
+    discussions: write
+
 jobs:
     action:
         runs-on: ubuntu-latest
