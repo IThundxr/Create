@@ -1,0 +1,32 @@
+# Configuration for Label Actions - https://github.com/dessant/label-actions
+
+# Used when a triager feels like they need more information to properly respond to or triage a issue
+'status: needs info':
+    comment: >
+        @{issue-author}, It appears you haven't attached a log describing your issue or forgot to fill in some fields.
+        Please go back and verify you have attached the crash-log/latest.log in the form of a file upload or link to a https://mclo.gs log.
+        Alongside that please make sure you have clearly described your issue and left exact reproduction steps to the best of your ability.
+        Once you've confirmed that please leave a message here saying "I updated my issue with the needed info." and a triager will take a look.
+
+'status: unable to reproduce':
+    comment: >
+        @{issue-author}, One of our testers/triagers were unable to reproduce this issues as you've described.
+        The issue may possibly be fixed already or caused by another mod you have installed.
+        If the issue occurs again please open a new issue.
+
+# Used when a user makes an issue regarding the fabric port on the forge page
+'loader: fabric':
+    comment: >
+        @{issue-author}, It appears you've made a issue regarding the Fabric version of Create on the Create-Forge issue tracker.
+        Please head to https://github.com/Fabricators-of-Create/Create/issues and open a issue there for Create-Fabric related problems.
+    close: true
+
+# Used when PR's fall behind and need conflicts to be fixed
+'pr status: conflicts':
+    comment: >
+        @{issue-author}, Seems like your PR has some conflicts, please pull in the latest changes and leave a message so we can mark this PR as ready for reviewing
+
+# Used when a maintainer or triager leave's a review or comments on a PR that need to be addressed by the PR author
+'pr status: waiting for author':
+    comment: >
+        @{issue-author}, A staff has left a review or some comments regarding your PR, please make these changes whenever possible and leave a message so we can mark this PR as ready for futher review
