@@ -877,12 +877,6 @@ public class Carriage {
 					return;
 				}
 
-				if (entity.getPassengers()
-					.stream()
-					.anyMatch(p -> p instanceof Player)
-					) {
-				}
-
 				if (train.carriageWaitingForChunks == id)
 					train.carriageWaitingForChunks = -1;
 

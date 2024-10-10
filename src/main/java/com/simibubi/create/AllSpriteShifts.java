@@ -86,8 +86,9 @@ public class AllSpriteShifts {
 	private static void populateMaps() {
 		WoodType[] supportedWoodTypes = new WoodType[] { WoodType.OAK, WoodType.SPRUCE, WoodType.BIRCH, WoodType.ACACIA,
 			WoodType.JUNGLE, WoodType.DARK_OAK, WoodType.MANGROVE, WoodType.CRIMSON, WoodType.WARPED };
-		Arrays.stream(supportedWoodTypes)
-			.forEach(woodType -> WOODEN_WINDOWS.put(woodType, vertical("palettes/" + woodType.name() + "_window")));
+
+		for (WoodType woodType : supportedWoodTypes)
+			WOODEN_WINDOWS.put(woodType, vertical("palettes/" + woodType.name() + "_window"));
 
 		for (DyeColor color : DyeColor.values()) {
 			String id = color.getSerializedName();

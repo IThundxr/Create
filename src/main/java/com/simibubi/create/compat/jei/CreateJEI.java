@@ -342,7 +342,7 @@ public class CreateJEI implements IModPlugin {
 
 		allCategories.forEach(c -> c.registerRecipes(registration));
 
-		registration.addRecipes(RecipeTypes.CRAFTING, ToolboxColoringRecipeMaker.createRecipes().toList());
+		registration.addRecipes(RecipeTypes.CRAFTING, ToolboxColoringRecipeMaker.createRecipes());
 	}
 
 	@Override

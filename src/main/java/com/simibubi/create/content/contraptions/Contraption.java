@@ -1183,7 +1183,12 @@ public abstract class Contraption {
 
 		capturedMultiblocks.keySet().forEach(controllerPos -> {
 			Collection<StructureBlockInfo> multiblockParts = capturedMultiblocks.get(controllerPos);
-			Optional<BoundingBox> optionalBoundingBox = BoundingBox.encapsulatingPositions(multiblockParts.stream().map(info -> transform.apply(info.pos())).toList());
+
+			List<BlockPos> transforms = new ArrayList<>();
+			for (StructureBlockInfo info : multiblockParts)
+				transforms.add(transform.apply(info.pos()));
+
+			Optional<BoundingBox> optionalBoundingBox = BoundingBox.encapsulatingPositions(transforms);
 			if (optionalBoundingBox.isEmpty())
 				return;
 
@@ -1255,8 +1260,12 @@ public abstract class Contraption {
 	}
 
 	public boolean isActorTypeDisabled(ItemStack filter) {
-		return disabledActors.stream()
-			.anyMatch(i -> ContraptionControlsMovement.isSameFilter(i, filter));
+		for (ItemStack disabledActor : disabledActors) {
+			if (ContraptionControlsMovement.isSameFilter(disabledActor, filter))
+				return true;
+		}
+
+		return false;
 	}
 
 	public void setActorsActive(ItemStack referenceStack, boolean enable) {

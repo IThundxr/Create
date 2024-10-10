@@ -223,8 +223,8 @@ public abstract class FluidIngredient implements Predicate<FluidStack> {
 			// Tag has to be resolved on the server before sending
 			List<FluidStack> matchingFluidStacks = getMatchingFluidStacks();
 			buffer.writeVarInt(matchingFluidStacks.size());
-			matchingFluidStacks.stream()
-				.forEach(buffer::writeFluidStack);
+			for (FluidStack stack : matchingFluidStacks)
+				buffer.writeFluidStack(stack);
 		}
 
 		@Override

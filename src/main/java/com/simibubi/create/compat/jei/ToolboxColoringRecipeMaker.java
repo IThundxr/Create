@@ -1,6 +1,8 @@
 package com.simibubi.create.compat.jei;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import com.simibubi.create.AllBlocks;
@@ -22,15 +24,16 @@ import net.minecraft.world.level.block.Block;
 public final class ToolboxColoringRecipeMaker {
 
 	// From JEI's ShulkerBoxColoringRecipeMaker
-	public static Stream<CraftingRecipe> createRecipes() {
+	public static List<CraftingRecipe> createRecipes() {
 		String group = "create.toolbox.color";
 		ItemStack baseShulkerStack = AllBlocks.TOOLBOXES.get(DyeColor.BROWN)
 			.asStack();
 		Ingredient baseShulkerIngredient = Ingredient.of(baseShulkerStack);
 
-		return Arrays.stream(DyeColor.values())
-			.filter(dc -> dc != DyeColor.BROWN)
-			.map(color -> {
+		List<CraftingRecipe> recipes = new ArrayList<>();
+
+		for (DyeColor color : DyeColor.values()) {
+			if (color != DyeColor.BROWN) {
 				DyeItem dye = DyeItem.byColor(color);
 				ItemStack dyeStack = new ItemStack(dye);
 				TagKey<Item> colorTag = color.getTag();
@@ -39,13 +42,16 @@ public final class ToolboxColoringRecipeMaker {
 				Stream<Ingredient.Value> colorIngredientStream = Stream.of(dyeList, colorList);
 				Ingredient colorIngredient = Ingredient.fromValues(colorIngredientStream);
 				NonNullList<Ingredient> inputs =
-					NonNullList.of(Ingredient.EMPTY, baseShulkerIngredient, colorIngredient);
+						NonNullList.of(Ingredient.EMPTY, baseShulkerIngredient, colorIngredient);
 				Block coloredShulkerBox = AllBlocks.TOOLBOXES.get(color)
-					.get();
+						.get();
 				ItemStack output = new ItemStack(coloredShulkerBox);
 				ResourceLocation id = Create.asResource(group + "." + output.getDescriptionId());
-				return new ShapelessRecipe(id, group, CraftingBookCategory.MISC, output, inputs);
-			});
+				recipes.add(new ShapelessRecipe(id, group, CraftingBookCategory.MISC, output, inputs));
+			}
+		}
+
+		return recipes;
 	}
 
 	private ToolboxColoringRecipeMaker() {}

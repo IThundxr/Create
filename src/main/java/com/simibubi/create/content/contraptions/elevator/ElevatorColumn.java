@@ -62,34 +62,32 @@ public class ElevatorColumn {
 	}
 
 	public void floorReached(LevelAccessor level, String name) {
-		getContacts().stream()
-			.forEach(p -> {
-				if (level.getBlockEntity(p) instanceof ElevatorContactBlockEntity ecbe)
-					ecbe.updateDisplayedFloor(name);
-			});
+		for (BlockPos contact : getContacts())
+			if (level.getBlockEntity(contact) instanceof ElevatorContactBlockEntity ecbe)
+				ecbe.updateDisplayedFloor(name);
 	}
 
 	public int namesListVersion;
 
 	public List<IntAttached<Couple<String>>> compileNamesList() {
-		return getContacts().stream()
-			.map(p -> {
-				if (level.getBlockEntity(p) instanceof ElevatorContactBlockEntity ecbe)
-					return IntAttached.with(p.getY(), ecbe.getNames());
-				return null;
-			})
-			.filter(Objects::nonNull)
-			.toList();
+		List<IntAttached<Couple<String>>> list = new ArrayList<>();
+
+		for (BlockPos contact : getContacts())
+			if (level.getBlockEntity(contact) instanceof ElevatorContactBlockEntity ecbe)
+				list.add(IntAttached.with(contact.getY(), ecbe.getNames()));
+
+		return list;
 	}
 
 	public void namesChanged() {
 		namesListVersion++;
 	}
 
-	public Collection<BlockPos> getContacts() {
-		return contacts.stream()
-			.map(this::contactAt)
-			.toList();
+	public List<BlockPos> getContacts() {
+		List<BlockPos> contactPositions = new ArrayList<>();
+		for (int contactY : contacts)
+			contactPositions.add(contactAt(contactY));
+		return contactPositions;
 	}
 
 	public void gatherAll() {
@@ -117,7 +115,7 @@ public class ElevatorColumn {
 		targetedYLevel = yLevel;
 		targetAvailable = true;
 	}
-	
+
 	public boolean isTargetAvailable() {
 		return targetAvailable;
 	}

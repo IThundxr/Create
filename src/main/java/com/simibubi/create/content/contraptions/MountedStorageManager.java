@@ -57,21 +57,27 @@ public class MountedStorageManager {
 	}
 
 	public void createHandlers() {
-		Collection<MountedStorage> itemHandlers = storage.values();
+		List<IItemHandlerModifiable> inventoryHandlers = new ArrayList<>();
+		List<IItemHandlerModifiable> fuelInventoryHandlers = new ArrayList<>();
 
-		inventory = wrapItems(itemHandlers.stream()
-			.map(MountedStorage::getItemHandler)
-			.toList(), false);
+		List<IFluidHandler> fluidInventoryHandlers = new ArrayList<>();
 
-		fuelInventory = wrapItems(itemHandlers.stream()
-			.filter(MountedStorage::canUseForFuel)
-			.map(MountedStorage::getItemHandler)
-			.toList(), true);
+		for (MountedStorage storage : storage.values()) {
+			inventoryHandlers.add(storage.getItemHandler());
 
-		fluidInventory = wrapFluids(fluidStorage.values()
-			.stream()
-			.map(MountedFluidStorage::getFluidHandler)
-			.collect(Collectors.toList()));
+			if (storage.canUseForFuel())
+				fuelInventoryHandlers.add(storage.getItemHandler());
+		}
+
+		for (MountedFluidStorage storage : fluidStorage.values()) {
+			fluidInventoryHandlers.add(storage.getFluidHandler());
+		}
+
+		inventory = wrapItems(inventoryHandlers, false);
+
+		fuelInventory = wrapItems(fuelInventoryHandlers, true);
+
+		fluidInventory = wrapFluids(fluidInventoryHandlers);
 	}
 
 	protected ContraptionInvWrapper wrapItems(Collection<IItemHandlerModifiable> list, boolean fuel) {
