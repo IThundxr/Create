@@ -50,6 +50,8 @@ public class GlobalRailwayManager {
 	private List<Train> waitingTrains;
 
 	private RailwaySavedData savedData;
+	
+	public int version;
 
 	public GlobalRailwayManager() {
 		cleanUp();
