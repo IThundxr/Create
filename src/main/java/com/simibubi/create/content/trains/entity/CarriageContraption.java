@@ -273,9 +273,10 @@ public class CarriageContraption extends Contraption {
 			return super.getRenderedBlocks();
 
 		specialRenderedBEsOutsidePortal = new ArrayList<>();
-		specialRenderedBlockEntities.stream()
-			.filter(be -> !isHiddenInPortal(be.getBlockPos()))
-			.forEach(specialRenderedBEsOutsidePortal::add);
+
+		for (BlockEntity be : specialRenderedBlockEntities)
+			if (!isHiddenInPortal(be.getBlockPos()))
+				specialRenderedBEsOutsidePortal.add(be);
 
 		Collection<StructureBlockInfo> values = new ArrayList<>();
 		for (Entry<BlockPos, StructureBlockInfo> entry : blocks.entrySet()) {

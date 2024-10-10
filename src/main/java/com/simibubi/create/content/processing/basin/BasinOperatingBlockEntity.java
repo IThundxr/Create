@@ -1,9 +1,9 @@
 package com.simibubi.create.content.processing.basin;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.advancement.CreateAdvancement;
@@ -91,9 +91,7 @@ public abstract class BasinOperatingBlockEntity extends KineticBlockEntity {
 		if (recipe == null)
 			return false;
 		Optional<BasinBlockEntity> basin = getBasin();
-		if (!basin.isPresent())
-			return false;
-		return BasinRecipe.match(basin.get(), recipe);
+		return basin.filter(basinBlockEntity -> BasinRecipe.match(basinBlockEntity, recipe)).isPresent();
 	}
 
 	protected void applyBasinRecipe() {
@@ -101,7 +99,7 @@ public abstract class BasinOperatingBlockEntity extends KineticBlockEntity {
 			return;
 
 		Optional<BasinBlockEntity> optionalBasin = getBasin();
-		if (!optionalBasin.isPresent())
+		if (optionalBasin.isEmpty())
 			return;
 		BasinBlockEntity basin = optionalBasin.get();
 		boolean wasEmpty = basin.canContinueProcessing();
@@ -123,15 +121,18 @@ public abstract class BasinOperatingBlockEntity extends KineticBlockEntity {
 		if (getBasin().map(BasinBlockEntity::isEmpty)
 			.orElse(true))
 			return new ArrayList<>();
-		
-		List<Recipe<?>> list = RecipeFinder.get(getRecipeCacheKey(), level, this::matchStaticFilters);
-		return list.stream()
-			.filter(this::matchBasinRecipe)
-			.sorted((r1, r2) -> r2.getIngredients()
-				.size()
-				- r1.getIngredients()
-					.size())
-			.collect(Collectors.toList());
+
+		List<Recipe<?>> filteredRecipes = new ArrayList<>();
+
+		for (Recipe<?> recipe : RecipeFinder.get(getRecipeCacheKey(), level, this::matchStaticFilters)) {
+			if (matchBasinRecipe(recipe)) {
+				filteredRecipes.add(recipe);
+			}
+		}
+
+		filteredRecipes.sort(Comparator.comparingInt(recipe -> recipe.getIngredients().size()));
+
+		return filteredRecipes;
 	}
 
 	protected abstract void onBasinRemoved();

@@ -147,9 +147,7 @@ public class TrackPropagator {
 					sync.graphRemoved(other);
 				}
 		} else if (connectedGraphs.size() == 1) {
-			graph = connectedGraphs.stream()
-				.findFirst()
-				.get();
+			graph = connectedGraphs.stream().findFirst().get();
 		} else
 			manager.putGraphWithDefaultGroup(graph = new TrackGraph());
 

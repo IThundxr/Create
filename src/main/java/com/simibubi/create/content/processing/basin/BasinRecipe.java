@@ -39,17 +39,12 @@ public class BasinRecipe extends ProcessingRecipe<SmartInventory> {
 		if (filter == null)
 			return false;
 
-		boolean filterTest = filter.test(recipe.getResultItem(basin.getLevel()
-			.registryAccess()));
-		if (recipe instanceof BasinRecipe) {
-			BasinRecipe basinRecipe = (BasinRecipe) recipe;
-			if (basinRecipe.getRollableResults()
-				.isEmpty()
-				&& !basinRecipe.getFluidResults()
-					.isEmpty())
-				filterTest = filter.test(basinRecipe.getFluidResults()
-					.get(0));
-		}
+		boolean filterTest = filter.test(recipe.getResultItem(basin.getLevel().registryAccess()));
+
+		if (recipe instanceof BasinRecipe basinRecipe &&
+				basinRecipe.getRollableResults().isEmpty() &&
+				!basinRecipe.getFluidResults().isEmpty())
+				filterTest = filter.test(basinRecipe.getFluidResults().get(0));
 
 		if (!filterTest)
 			return false;
@@ -150,14 +145,14 @@ public class BasinRecipe extends ProcessingRecipe<SmartInventory> {
 			if (simulate) {
 				if (recipe instanceof BasinRecipe basinRecipe) {
 					recipeOutputItems.addAll(basinRecipe.rollResults());
-					
+
 					for (FluidStack fluidStack : basinRecipe.getFluidResults())
 						if (!fluidStack.isEmpty())
 							recipeOutputFluids.add(fluidStack);
 					for (ItemStack stack : basinRecipe.getRemainingItems(basin.getInputInventory()))
 						if (!stack.isEmpty())
 							recipeOutputItems.add(stack);
-					
+
 				} else {
 					recipeOutputItems.add(recipe.getResultItem(basin.getLevel()
 						.registryAccess()));

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -118,9 +117,12 @@ public abstract class CreateRecipeCategory<T extends Recipe<?>> implements IReci
 	}
 
 	public static List<FluidStack> withImprovedVisibility(List<FluidStack> stacks) {
-		return stacks.stream()
-			.map(CreateRecipeCategory::withImprovedVisibility)
-			.collect(Collectors.toList());
+		List<FluidStack> list = new ArrayList<>();
+
+		for (FluidStack stack : stacks)
+			list.add(CreateRecipeCategory.withImprovedVisibility(stack));
+
+		return list;
 	}
 
 	public static FluidStack withImprovedVisibility(FluidStack stack) {
@@ -149,9 +151,9 @@ public abstract class CreateRecipeCategory<T extends Recipe<?>> implements IReci
 				else
 					tooltip.set(0, name);
 
-				ArrayList<Component> potionTooltip = new ArrayList<>();
+				List<Component> potionTooltip = new ArrayList<>();
 				PotionFluidHandler.addPotionTooltip(fluidStack, potionTooltip, 1);
-				tooltip.addAll(1, potionTooltip.stream().toList());
+				tooltip.addAll(1, potionTooltip);
 			}
 
 			int amount = mbAmount == -1 ? fluidStack.getAmount() : mbAmount;

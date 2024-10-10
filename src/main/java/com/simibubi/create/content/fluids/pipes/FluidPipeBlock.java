@@ -14,6 +14,7 @@ import com.simibubi.create.content.decoration.encasing.EncasableBlock;
 import com.simibubi.create.content.equipment.wrench.IWrenchableWithBracket;
 import com.simibubi.create.content.fluids.FluidPropagator;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
+import com.simibubi.create.content.fluids.PipeConnection;
 import com.simibubi.create.foundation.advancement.AdvancementBehaviour;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.block.IBE;
@@ -95,11 +96,14 @@ public class FluidPipeBlock extends PipeBlock implements SimpleWaterloggedBlock,
 		if (clickedFace.getAxis() == axis)
 			return InteractionResult.PASS;
 		if (!world.isClientSide) {
-			withBlockEntityDo(world, pos, fpte -> fpte.getBehaviour(FluidTransportBehaviour.TYPE).interfaces.values()
-				.stream()
-				.filter(pc -> pc != null && pc.hasFlow())
-				.findAny()
-				.ifPresent($ -> AllAdvancements.GLASS_PIPE.awardTo(context.getPlayer())));
+			withBlockEntityDo(world, pos, fpte -> {
+				for (PipeConnection c : fpte.getBehaviour(FluidTransportBehaviour.TYPE).interfaces.values()) {
+					if (c != null && c.hasFlow()) {
+						AllAdvancements.GLASS_PIPE.awardTo(context.getPlayer());
+						break;
+					}
+				}
+			});
 
 			FluidTransportBehaviour.cacheFlows(world, pos);
 			world.setBlockAndUpdate(pos, AllBlocks.GLASS_FLUID_PIPE.getDefaultState()
@@ -341,20 +345,20 @@ public class FluidPipeBlock extends PipeBlock implements SimpleWaterloggedBlock,
 	public VoxelShape getOcclusionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
 		return OCCLUSION_BOX;
 	}
-	
+
 	@Override
 	public BlockState rotate(BlockState pState, Rotation pRotation) {
 		return FluidPipeBlockRotation.rotate(pState, pRotation);
 	}
-	
+
 	@Override
 	public BlockState mirror(BlockState pState, Mirror pMirror) {
 		return FluidPipeBlockRotation.mirror(pState, pMirror);
 	}
-	
+
 	@Override
 	public BlockState transform(BlockState state, StructureTransform transform) {
 		return FluidPipeBlockRotation.transform(state, transform);
 	}
-	
+
 }

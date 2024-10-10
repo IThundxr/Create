@@ -1,6 +1,7 @@
 package com.simibubi.create.content.trains.station;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jozufozu.flywheel.core.PartialModel;
@@ -25,7 +26,7 @@ public class AssemblyScreen extends AbstractStationScreen {
 
 	private IconButton quitAssembly;
 	private IconButton toggleAssemblyButton;
-	private List<ResourceLocation> iconTypes;
+	private final List<ResourceLocation> iconTypes = new ArrayList<>();
 	private ScrollInput iconTypeScroll;
 
 	public AssemblyScreen(StationBlockEntity be, GlobalStation station) {
@@ -46,9 +47,7 @@ public class AssemblyScreen extends AbstractStationScreen {
 			ib.setToolTip(Lang.translateDirect("station.close"));
 		}
 
-		iconTypes = TrainIconType.REGISTRY.keySet()
-			.stream()
-			.toList();
+		iconTypes.addAll(TrainIconType.REGISTRY.keySet());
 		iconTypeScroll = new ScrollInput(x + 4, y + 17, 184, 14).titled(Lang.translateDirect("station.icon_type"));
 		iconTypeScroll.withRange(0, iconTypes.size());
 		iconTypeScroll.withStepFunction(ctx -> -iconTypeScroll.standardStep()

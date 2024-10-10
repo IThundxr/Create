@@ -12,6 +12,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.simibubi.create.content.trains.signal.EdgeGroupColor;
+
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import com.simibubi.create.AllPackets;
@@ -58,14 +60,16 @@ public class GlobalRailwayManager {
 			loadTrackData(serverPlayer.getServer());
 			trackNetworks.values()
 				.forEach(g -> sync.sendFullGraphTo(g, serverPlayer));
-			ArrayList<SignalEdgeGroup> asList = new ArrayList<>(signalEdgeGroups.values());
-			sync.sendEdgeGroups(asList.stream()
-				.map(g -> g.id)
-				.toList(),
-				asList.stream()
-					.map(g -> g.color)
-					.toList(),
-				serverPlayer);
+
+			List<UUID> uuids = new ArrayList<>();
+			List<EdgeGroupColor> colors = new ArrayList<>();
+
+			for (SignalEdgeGroup group : signalEdgeGroups.values()) {
+				uuids.add(group.id);
+				colors.add(group.color);
+			}
+
+			sync.sendEdgeGroups(uuids, colors, serverPlayer);
 			for (Train train : trains.values())
 				AllPackets.getChannel().send(PacketDistributor.PLAYER.with(() -> serverPlayer),
 					new TrainPacket(train, true));

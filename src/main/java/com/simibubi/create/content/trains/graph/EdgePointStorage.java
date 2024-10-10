@@ -1,7 +1,9 @@
 package com.simibubi.create.content.trains.graph;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -38,10 +40,10 @@ public class EdgePointStorage {
 
 	@SuppressWarnings("unchecked")
 	public <T extends TrackEdgePoint> Collection<T> values(EdgePointType<T> type) {
-		return getMap(type).values()
-			.stream()
-			.map(e -> (T) e)
-			.toList();
+		List<T> list = new ArrayList<>();
+		for (TrackEdgePoint point : getMap(type).values())
+			list.add((T) point);
+		return list;
 	}
 
 	public Map<UUID, TrackEdgePoint> getMap(EdgePointType<? extends TrackEdgePoint> type) {
