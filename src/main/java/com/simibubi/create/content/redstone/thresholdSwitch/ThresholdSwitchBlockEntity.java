@@ -128,12 +128,15 @@ public class ThresholdSwitchBlockEntity extends SmartBlockEntity {
 						ItemStack stackInSlot = inv.getStackInSlot(slot);
 
 						int finalSlot = slot;
-						long space = COMPAT
-							.stream()
-							.filter(compat -> compat.isFromThisMod(targetBlockEntity))
-							.map(compat -> compat.getSpaceInSlot(inv, finalSlot))
-							.findFirst()
-							.orElseGet(() -> (long) Math.min(stackInSlot.getMaxStackSize(), inv.getSlotLimit(finalSlot)));
+
+						long space = Math.min(stackInSlot.getMaxStackSize(), inv.getSlotLimit(finalSlot));
+
+						for (ThresholdSwitchCompat compat : COMPAT) {
+							if (compat.isFromThisMod(targetBlockEntity)) {
+								space = compat.getSpaceInSlot(inv, finalSlot);
+								break;
+							}
+						}
 
 						int count = stackInSlot.getCount();
 						if (space == 0)
